@@ -21,7 +21,7 @@ clean-test:
 
 test: clean-test
 	-pytest --cov=fastapi_auth0 --cov-report=term-missing tests/ -v -s
-	mypy fastapi_auth0 --strict
+	mypy fastapi_auth0 --python-version 3.11 --strict
 
 test-single-module: clean-test
 	pytest $(module) -v -s
