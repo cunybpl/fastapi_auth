@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "fastapi-auth0"
+version = "0.1.0"
+description = "Reusable fastapi auth0 components; adapted from dorinclisu/fastapi-auth0"
+authors = ["tinnaing347 <tinnaing347@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "fastapi_auth0"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+fastapi = "^0.60.0"
+python-jose = "^3.2.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
+pytest-mock = "^3.10.0"
+black = "^23.1.0"
+mypy = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
