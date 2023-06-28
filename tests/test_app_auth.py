@@ -3,7 +3,6 @@ import base64
 import json
 from typing import Dict
 from fastapi.testclient import TestClient
-import httpx
 from fastapi_auth0 import Auth0User
 
 client = TestClient(app)
