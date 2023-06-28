@@ -28,3 +28,9 @@ test-single-module: clean-test
 
 install: clean 
 	poetry install 
+
+
+test-app:clean-test
+	-docker compose run --rm  app
+	-pytest tests/test_app_auth.py -v -s
+	docker compose down 

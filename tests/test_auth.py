@@ -169,7 +169,7 @@ async def test_get_user_with_exceptions(mocker):
         def _raise_error(token: str):
             raise jwt.JWTError
 
-        mocker.patch("fastapi_atuh0.auth.Auth0._decode_token", side_effect=_raise_error)
+        mocker.patch("fastapi_auth0.auth.Auth0._decode_token", side_effect=_raise_error)
         await auth_.get_user(security_scopes, cred)
 
     # Auth0UnauthenticatedException raise from _decode_token
