@@ -60,8 +60,8 @@ class Auth0User(pydantic.BaseModel):
         str
     ]  # just leaving an empty field so that we don't have to modify the rest..
     org_id: Optional[str]
-    org_metadata: Optional[pydantic.Json[Any]]
-    app_metadata: Optional[pydantic.Json[Any]]
+    org_metadata: Optional[Dict[str, Any]]
+    app_metadata: Optional[Dict[str, Any]]
 
 
 class Auth0HTTPBearer(HTTPBearer):
