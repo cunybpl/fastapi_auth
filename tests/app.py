@@ -3,7 +3,7 @@
 from typing import Dict, Optional
 from fastapi import FastAPI, Depends, Security
 from fastapi.testclient import TestClient
-from pydantic import Field, BaseSettings
+from pydantic import Field
 
 # from fastapi_auth0 import Auth0, Auth0User, security_responses
 from fastapi_auth0.auth import Auth0, Auth0User, security_responses
