@@ -54,14 +54,14 @@ security_responses: Dict[int, Any] = {
 
 class Auth0User(pydantic.BaseModel):
     id: str = pydantic.Field(..., alias="sub")
-    permissions: Optional[List[str]]
+    permissions: Optional[List[str]] = None
     # email: Optional[str] = pydantic.Field(None, alias=f"{auth0_rule_namespace}/email")  # type: ignore [literal-required]
     email: Optional[
         str
-    ]  # just leaving an empty field so that we don't have to modify the rest..
-    org_id: Optional[str]
-    org_metadata: Optional[Dict[str, Any]]
-    app_metadata: Optional[Dict[str, Any]]
+    ] = None  # just leaving an empty field so that we don't have to modify the rest..
+    org_id: Optional[str] = None
+    org_metadata: Optional[Dict[str, Any]] = None
+    app_metadata: Optional[Dict[str, Any]] = None
 
 
 class Auth0HTTPBearer(HTTPBearer):
