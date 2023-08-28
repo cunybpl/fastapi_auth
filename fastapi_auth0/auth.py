@@ -60,6 +60,7 @@ class Auth0User(pydantic.BaseModel):
         str
     ] = None  # just leaving an empty field so that we don't have to modify the rest..
     org_id: Optional[str] = None
+    org_name: Optional[str] = None
     org_metadata: Optional[Dict[str, Any]] = None
     app_metadata: Optional[Dict[str, Any]] = None
 
