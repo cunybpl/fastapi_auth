@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-auth0"
-version = "0.2.0"
+version = "0.2.1"
 description = "Reusable fastapi auth0 components; adapted from dorinclisu/fastapi-auth0"
 authors = ["tinnaing347 <tinnaing347@gmail.com>"]
 license = "MIT"
