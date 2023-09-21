@@ -16,6 +16,9 @@ class CustomAuth0User(Auth0User):
 
 ###############################################################################
 auth = Auth0(domain="domain", api_audience="audience")
+auth_custom = Auth0(
+    domain="domain", api_audience="audience", user_model=CustomAuth0User
+)
 auth.jwks = {
     "keys": [
         {
@@ -28,6 +31,18 @@ auth.jwks = {
     ]
 }
 auth.algorithms = ["veryfast"]
+auth_custom.jwks = {
+    "keys": [
+        {
+            "kid": "veryrealkid",
+            "kty": "veryreal_kty",
+            "use": "veryreal_use",
+            "n": "veryreal_n",
+            "e": "veryreal_e",
+        }
+    ]
+}
+auth_custom.algorithms = ["veryfast"]
 app = FastAPI()
 
 
@@ -65,5 +80,12 @@ async def get_also_secure_2():
 @app.get("/secure-scoped")
 async def get_secure_scoped(
     user: Auth0User = Security(auth.get_user, scopes=["read:scope1"])
+):
+    return user
+
+
+@app.get("/secure-custom-user")
+async def get_secure_custom_user(
+    user: CustomAuth0User = Security(auth_custom.get_user),
 ):
     return user

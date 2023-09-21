@@ -1,4 +1,4 @@
-from .app import app
+from .app import app, CustomAuth0User
 import base64
 import json
 from typing import Dict
@@ -64,3 +64,8 @@ def test_private(mocker):
     # M2M app is not subject to RBAC, so any permission given to it will also authorize the scope.
     resp = client.get("/secure-scoped", headers=headers)
     assert resp.status_code == 200, resp.text
+
+    resp = client.get("/secure-custom-user", headers=headers)
+    assert resp.status_code == 200, resp.text
+    user = CustomAuth0User(**resp.json())
+    assert user.grant_type in ["client-credentials", "client_credentials"]
