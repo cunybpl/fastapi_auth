@@ -91,6 +91,42 @@ def test_parse_user_from_payload():
         auth_._parse_user_from_payload(payload={"sup": "sup"})
 
 
+def test_parse_user_from_payload_with_custom_model():
+    payload = {
+        "sub": "whatsup",
+        "permissions": ["crude"],
+        "email": "blah@yada.com",
+        "extra": {"agencies": [1, 2]},
+    }
+
+    class Custom(auth.BaseAuth0User):
+        extra: Dict[str, Any]
+
+    auth_ = auth.Auth0(
+        domain="verynice",
+        api_audience="wild",
+        org_id="cia",
+        scopes={"read:scope": "read scope"},
+        user_model=Custom,
+    )
+
+    auth_._parse_user_from_payload(payload)
+
+    auth_.email_auto_error = True
+    payload.pop("email")
+    with pytest.raises(auth.Auth0UnauthorizedException):
+        auth_._parse_user_from_payload(payload)  # email not present
+
+    # pydantic validation error
+    with pytest.raises(auth.Auth0UnauthorizedException):
+        auth_._parse_user_from_payload(payload={"sup": "sup"})
+    # payload without extra
+    payload["extra"] = 1
+    payload["email"] = "good@email.com"
+    with pytest.raises(auth.Auth0UnauthorizedException):
+        auth_._parse_user_from_payload(payload=payload)
+
+
 async def test_get_user(mocker):
     payload = {
         "sub": "whatsub",

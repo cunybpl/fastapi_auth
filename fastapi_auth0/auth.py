@@ -19,6 +19,7 @@ from fastapi.security import (
 from fastapi.openapi.models import OAuthFlows, OAuthFlowImplicit
 import pydantic
 from typing_extensions import TypedDict
+from typing import TypeVar, Type
 
 
 logger = logging.getLogger("fastapi_auth0")
@@ -52,17 +53,20 @@ security_responses: Dict[int, Any] = {
 }
 
 
-class Auth0User(pydantic.BaseModel):
+class BaseAuth0User(pydantic.BaseModel):
     id: str = pydantic.Field(..., alias="sub")
     permissions: Optional[List[str]] = None
     # email: Optional[str] = pydantic.Field(None, alias=f"{auth0_rule_namespace}/email")  # type: ignore [literal-required]
     email: Optional[
         str
     ] = None  # just leaving an empty field so that we don't have to modify the rest..
+
+
+class Auth0User(BaseAuth0User):
     org_id: Optional[str] = None
     org_name: Optional[str] = None
-    org_metadata: Optional[Dict[str, Any]] = None
-    app_metadata: Optional[Dict[str, Any]] = None
+    org_metadata: Optional[Any] = None
+    app_metadata: Optional[Any] = None
 
 
 class Auth0HTTPBearer(HTTPBearer):
@@ -112,11 +116,13 @@ class Auth0:
         scopes: Optional[Dict[str, str]] = None,
         scope_auto_error: bool = True,
         email_auto_error: bool = False,
+        user_model: Type[BaseAuth0User] = Auth0User,
     ):
         self.domain = domain
         self.audience = api_audience
         self.org_id = org_id
         self.scopes = scopes if scopes else {}
+        self.user_model = user_model
 
         self.scope_auto_error = scope_auto_error
         self.email_auto_error = email_auto_error
@@ -155,7 +161,7 @@ class Auth0:
         creds: Optional[HTTPAuthorizationCredentials] = Depends(
             Auth0HTTPBearer(auto_error=False)
         ),
-    ) -> Auth0User:
+    ) -> BaseAuth0User:
         """
         Verify the Authorization: Bearer token and return the user.
         If there is any problem and auto_error = True then raise Auth0UnauthenticatedException or Auth0UnauthorizedException,
@@ -236,9 +242,9 @@ class Auth0:
                 detail="Invalid kid header (wrong tenant or rotated public key)"
             )
 
-    def _parse_user_from_payload(self, payload: Dict[str, Any]) -> Auth0User:
+    def _parse_user_from_payload(self, payload: Dict[str, Any]) -> BaseAuth0User:
         try:
-            user = Auth0User(**payload)
+            user = self.user_model(**payload)
 
             if self.email_auto_error and not user.email:
                 raise Auth0UnauthorizedException(
